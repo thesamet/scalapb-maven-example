@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package mvnexample;
+
+import "example.proto";
+
+message GoodBye {
+  Hello hello = 1;
+}
