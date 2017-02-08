@@ -25,7 +25,7 @@
     <dependency>
       <groupId>com.trueaccord.scalapb</groupId>
       <artifactId>scalapb-runtime_2.11</artifactId>
-      <version>0.5.40</version>
+      <version>0.5.47</version>
     </dependency>
   </dependencies>
 
@@ -99,6 +99,7 @@
                 <argument>-v300</argument> <!-- for protoc v3.0.0, can be 261 for v2.6.1 -->
                 <argument>--throw</argument> <!-- Important: otherwise scalapbc will kill the VM -->
                 <argument>--proto_path=${project.basedir}/src/main/protobuf</argument>
+                <argument>--proto_path=${project.basedir}/third_party</argument>
                 <argument>--scala_out=${project.build.directory}/generated-sources/protobuf</argument>
                 <argument>${project.basedir}/src/main/protobuf/example.proto</argument>
                 <argument>${project.basedir}/src/main/protobuf/anotherexample.proto</argument>
@@ -110,7 +111,7 @@
           <dependency>
             <groupId>com.trueaccord.scalapb</groupId>
             <artifactId>scalapbc_2.11</artifactId>
-            <version>0.5.40</version>
+            <version>0.5.47</version>
           </dependency>
         </dependencies>
       </plugin>

@@ -1,0 +1,66 @@
+syntax = "proto2";
+
+package scalapb;
+
+option java_package = "com.trueaccord.scalapb";
+
+import "google/protobuf/descriptor.proto";
+
+message ScalaPbOptions {
+  // If set then it overrides the java_package and package.
+  optional string package_name = 1;
+
+  // If true, the compiler does not append the proto base file name
+  // into the generated package name. If false (the default), the
+  // generated scala package name is the package_name.basename where
+  // basename is the proto file name without the .proto extension.
+  optional bool flat_package = 2;
+
+  // Adds the following imports at the top of the file (this is meant
+  // to provide implicit TypeMappers)
+  repeated string import = 3;
+
+  // Text to add to the generated scala file.  This can be used only
+  // when single_file is true.
+  repeated string preamble = 4;
+
+  // If true, all messages and enums (but not services) will be written
+  // to a single Scala file.
+  optional bool single_file = 5;
+
+  // When this option is enabled, wrappers defined at
+  // https://github.com/google/protobuf/blob/master/src/google/protobuf/wrappers.proto,
+  // are mapped to an Option[T] where T is a primitive type.
+  optional bool primitive_wrappers = 6;
+}
+
+extend google.protobuf.FileOptions {
+  // File-level optionals for ScalaPB.
+  // Extension number officially assigned by protobuf-global-extension-registry@google.com
+  optional ScalaPbOptions options = 1020;
+}
+
+message MessageOptions {
+  // Additional classes and traits to mix in to the case class.
+  repeated string extends = 1;
+
+  // Additional classes and traits to mix in to the companion object.
+  repeated string companion_extends = 2;
+}
+
+extend google.protobuf.MessageOptions {
+  // Message-level optionals for ScalaPB.
+  // Extension number officially assigned by protobuf-global-extension-registry@google.com
+  optional MessageOptions message = 1020;
+}
+
+message FieldOptions {
+  optional string type = 1;
+  optional string scala_name = 2;
+}
+
+extend google.protobuf.FieldOptions {
+  // File-level optionals for ScalaPB.
+  // Extension number officially assigned by protobuf-global-extension-registry@google.com
+  optional FieldOptions field = 1020;
+}
