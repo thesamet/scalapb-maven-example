@@ -101,6 +101,10 @@
                 <argument>--proto_path=${project.basedir}/src/main/protobuf</argument>
                 <argument>--proto_path=${project.basedir}/third_party</argument>
                 <argument>--scala_out=${project.build.directory}/generated-sources/protobuf</argument>
+                <!--
+                You can pass generator parameters to ScalaPB like so:
+                <argument>--scala_out=flat_package,single_line_to_string,java_conversions:${project.build.directory}/generated-sources/protobuf</argument>
+                -->
                 <argument>${project.basedir}/src/main/protobuf/example.proto</argument>
                 <argument>${project.basedir}/src/main/protobuf/anotherexample.proto</argument>
               </arguments>
