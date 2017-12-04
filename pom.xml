@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.trueaccord.scalapb</groupId>
+  <groupId>com.thesamet.scalapb</groupId>
   <artifactId>mvn-example</artifactId>
   <version>1.0-SNAPSHOT</version>
 
@@ -23,9 +23,9 @@
       <version>${scala.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.trueaccord.scalapb</groupId>
+      <groupId>com.thesamet.scalapb</groupId>
       <artifactId>scalapb-runtime_2.11</artifactId>
-      <version>0.5.47</version>
+      <version>0.7.0-rc4</version>
     </dependency>
   </dependencies>
 
@@ -87,12 +87,12 @@
             </goals>
             <phase>generate-sources</phase>
             <configuration>
-              <mainClass>com.trueaccord.scalapb.ScalaPBC</mainClass>
+              <mainClass>scalapb.ScalaPBC</mainClass>
               <cleanupDaemonThreads>false</cleanupDaemonThreads>
               <includePluginDependencies>true</includePluginDependencies>
               <classpathScope>compile</classpathScope>
               <executableDependency>
-                <groupId>com.trueaccord.scalapb</groupId>
+                <groupId>com.thesamet.scalapb</groupId>
                 <artifactId>scalapbc_2.11</artifactId>
               </executableDependency>
               <arguments>
@@ -114,9 +114,9 @@
         </executions>
         <dependencies>
           <dependency>
-            <groupId>com.trueaccord.scalapb</groupId>
+            <groupId>com.thesamet.scalapb</groupId>
             <artifactId>scalapbc_2.11</artifactId>
-            <version>0.5.47</version>
+            <version>0.7.0-rc4</version>
           </dependency>
         </dependencies>
       </plugin>

@@ -1,10 +1,13 @@
 syntax = "proto3";
 
-import "scalapb/scalapb.proto";
-
 package mvnexample;
 
 message Hello {
   int32 hello = 1;
 }
 
+enum MyEnum {
+  X = 0;
+  Y = 1;
+  Z = 2;
+}
