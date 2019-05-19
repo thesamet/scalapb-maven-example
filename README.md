@@ -3,8 +3,4 @@ mavne build.
 
 Run this with
 
-    mvn scala:run -DmainClass=test.Main
-
-For the UDT example
-    mvn compile -f pom-udt.xml
-
+    mvn scala:run -DmainClass=scalapb.demo.Demo

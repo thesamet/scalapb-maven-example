@@ -1,19 +1,26 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
   <groupId>com.thesamet.scalapb</groupId>
   <artifactId>mvn-example</artifactId>
   <version>1.0-SNAPSHOT</version>
+  <name>${project.artifactId}</name>
+  <description>ScalaPB Maven Example</description>
+  <inceptionYear>2018</inceptionYear>
+  <licenses>
+    <license>
+        <name>The Apache Software License, Version 2.0</name>
+        <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        <distribution>repo</distribution>
+    </license>
+  </licenses>
 
   <properties>
-    <maven.compiler.source>1.6</maven.compiler.source>
-    <maven.compiler.target>1.6</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
     <encoding>UTF-8</encoding>
-    <scala.version>2.11.7</scala.version>
-    <scala.compat.version>2.11</scala.compat.version>
+    <scala.version>2.12.6</scala.version>
+    <scala.compat.version>2.12</scala.compat.version>
+    <spec2.version>4.2.0</spec2.version>
   </properties>
 
   <dependencies>
@@ -24,110 +31,52 @@
     </dependency>
     <dependency>
       <groupId>com.thesamet.scalapb</groupId>
-      <artifactId>scalapb-runtime_2.11</artifactId>
-      <version>0.7.4</version>
+      <artifactId>scalapb-runtime_${scala.compat.version}</artifactId>
+      <version>0.9.0-M5</version>
+    </dependency>
+
+    <!-- Test -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.scalatest</groupId>
+      <artifactId>scalatest_${scala.compat.version}</artifactId>
+      <version>3.0.5</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.specs2</groupId>
+      <artifactId>specs2-core_${scala.compat.version}</artifactId>
+      <version>${spec2.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.specs2</groupId>
+      <artifactId>specs2-junit_${scala.compat.version}</artifactId>
+      <version>${spec2.version}</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
-
   <build>
     <sourceDirectory>src/main/scala</sourceDirectory>
+    <testSourceDirectory>src/test/scala</testSourceDirectory>
+    <extensions>
+      <extension>
+        <groupId>kr.motd.maven</groupId>
+        <artifactId>os-maven-plugin</artifactId>
+        <version>1.6.0</version>
+      </extension>
+    </extensions>
     <plugins>
-      <!-- Create the generated protobuf folder in target  -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.7</version>
-        <executions>
-          <execution>
-            <id>mkdir-generated-sources</id>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <phase>generate-sources</phase>
-            <configuration>
-              <target>
-                <mkdir dir="${project.build.directory}/generated-sources/protobuf" />
-              </target>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <!-- Add the generated folder as a source -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <version>1.12</version>
-        <executions>
-          <execution>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>add-source</goal>
-            </goals>
-            <configuration>
-              <sources>
-                <source>${project.build.directory}/generated-sources/protobuf</source>
-              </sources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <!-- Compile the proto file(s) -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>1.5.0</version>
-        <executions>
-          <execution>
-            <id>generate-scala-protobuf-classes</id>
-            <goals>
-              <goal>java</goal>
-            </goals>
-            <phase>generate-sources</phase>
-            <configuration>
-              <mainClass>scalapb.ScalaPBC</mainClass>
-              <cleanupDaemonThreads>false</cleanupDaemonThreads>
-              <includePluginDependencies>true</includePluginDependencies>
-              <classpathScope>compile</classpathScope>
-              <executableDependency>
-                <groupId>com.thesamet.scalapb</groupId>
-                <artifactId>scalapbc_2.11</artifactId>
-              </executableDependency>
-              <arguments>
-                <argument>-v300</argument> <!-- for protoc v3.0.0, can be 261 for v2.6.1 -->
-                <argument>--throw</argument> <!-- Important: otherwise scalapbc will kill the VM -->
-                <argument>--proto_path=${project.basedir}/src/main/protobuf</argument>
-                <argument>--proto_path=${project.basedir}/third_party</argument>
-                <argument>--scala_out=${project.build.directory}/generated-sources/protobuf</argument>
-                <!--
-                If you need to pass generator parameters to ScalaPB, then instead of the - -scala_out line above,
-                have something like this: 
-                <argument>- -scala_out=single_line_to_string,java_conversions:${project.build.directory}/generated-sources/protobuf</argument>
-
-                Note that there should be two dashes before the scala-out and not dash-space-dash
-                like above, but XML wouldn't allow two dashes inside a comment :/
-                -->
-                <argument>${project.basedir}/src/main/protobuf/example.proto</argument>
-                <argument>${project.basedir}/src/main/protobuf/anotherexample.proto</argument>
-              </arguments>
-            </configuration>
-          </execution>
-        </executions>
-        <dependencies>
-          <dependency>
-            <groupId>com.thesamet.scalapb</groupId>
-            <artifactId>scalapbc_2.11</artifactId>
-            <version>0.7.4</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-
       <plugin>
         <groupId>net.alchim31.maven</groupId>
         <artifactId>scala-maven-plugin</artifactId>
-        <version>3.2.0</version>
+        <version>3.3.2</version>
         <executions>
           <execution>
             <goals>
@@ -139,6 +88,63 @@
                 <arg>-dependencyfile</arg>
                 <arg>${project.build.directory}/.scala_dependencies</arg>
               </args>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.21.0</version>
+        <configuration>
+          <!-- Tests will be run with scalatest-maven-plugin instead -->
+          <skipTests>true</skipTests>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.scalatest</groupId>
+        <artifactId>scalatest-maven-plugin</artifactId>
+        <version>2.0.0</version>
+        <configuration>
+          <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
+          <junitxml>.</junitxml>
+          <filereports>TestSuiteReport.txt</filereports>
+          <!-- Comma separated list of JUnit test class names to execute -->
+          <jUnitClasses>scalapb.demo.ProtoSuite</jUnitClasses>
+        </configuration>
+        <executions>
+          <execution>
+            <id>test</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Add protobuf-maven-plugin and provide ScalaPB as a code generation plugin -->
+      <plugin>
+        <groupId>org.xolstice.maven.plugins</groupId>
+        <artifactId>protobuf-maven-plugin</artifactId>
+        <version>0.6.1</version>
+        <extensions>true</extensions>
+        <executions>
+          <execution>
+            <goals>
+              <goal>compile</goal>
+              <goal>test-compile</goal>
+            </goals>
+            <configuration>
+              <protocArtifact>com.google.protobuf:protoc:3.7.1:exe:${os.detected.classifier}</protocArtifact>
+              <protocPlugins>
+                  <protocPlugin>
+                      <id>scalapb</id>
+                      <groupId>com.thesamet.scalapb</groupId>
+                      <artifactId>scalapbc_${scala.compat.version}</artifactId>
+                      <version>0.9.0-M5</version>
+                      <mainClass>scalapb.scripts.ProtocGenScala</mainClass>
+                  </protocPlugin>
+              </protocPlugins>
             </configuration>
           </execution>
         </executions>
