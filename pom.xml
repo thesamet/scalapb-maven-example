@@ -14,6 +14,20 @@
     </license>
   </licenses>
 
+  <pluginRepositories>
+      <pluginRepository>
+          <id>sonatypeSnapshots</id>
+          <name>Sonatype Snapshots</name>
+          <releases>
+              <enabled>false</enabled>
+          </releases>
+          <snapshots>
+              <enabled>true</enabled>
+          </snapshots>
+          <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      </pluginRepository>
+  </pluginRepositories>
+
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
@@ -124,30 +138,27 @@
 
       <!-- Add protobuf-maven-plugin and provide ScalaPB as a code generation plugin -->
       <plugin>
-        <groupId>org.xolstice.maven.plugins</groupId>
-        <artifactId>protobuf-maven-plugin</artifactId>
-        <version>0.6.1</version>
-        <extensions>true</extensions>
-        <executions>
-          <execution>
-            <goals>
-              <goal>compile</goal>
-              <goal>test-compile</goal>
-            </goals>
-            <configuration>
-              <protocArtifact>com.google.protobuf:protoc:3.7.1:exe:${os.detected.classifier}</protocArtifact>
-              <protocPlugins>
-                  <protocPlugin>
-                      <id>scalapb</id>
-                      <groupId>com.thesamet.scalapb</groupId>
-                      <artifactId>scalapbc_${scala.compat.version}</artifactId>
-                      <version>0.9.0-M5</version>
-                      <mainClass>scalapb.scripts.ProtocGenScala</mainClass>
-                  </protocPlugin>
-              </protocPlugins>
-            </configuration>
-          </execution>
-        </executions>
+          <groupId>com.github.os72</groupId>
+          <artifactId>protoc-jar-maven-plugin</artifactId>
+          <version>3.7.1.1-SNAPSHOT</version>
+          <executions>
+              <execution>
+                  <phase>generate-sources</phase>
+                  <goals>
+                      <goal>run</goal>
+                  </goals>
+              </execution>
+          </executions>
+          <configuration>
+            <includeMavenTypes>transitive</includeMavenTypes>
+            <outputTargets>
+                <outputTarget>
+                    <type>scalapb</type>
+                    <outputOptions>grpc</outputOptions> <!-- more scalapb options can be added here -->
+                    <pluginArtifact>com.thesamet.scalapb:protoc-gen-scala:0.9.6:sh:unix</pluginArtifact>
+                </outputTarget>
+            </outputTargets>
+        </configuration>
       </plugin>
     </plugins>
   </build>
